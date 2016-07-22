@@ -1,0 +1,17 @@
+html(lang="en")
+  head
+    title= title
+  body
+    h1
+      pre Send requests to: 
+      
+    pre.lines <b>/api/near/<span class='green'>{latitude}</span>/<span class='green'>{longtitude}</span></b><span>
+
+    style(type='text/css') 
+        |  .green {
+        |      color: green;
+        |  }   
+        |  pre.lines {
+        |     margin-bottom: 10px;
+        |     padding-left: 20px;
+        |  }

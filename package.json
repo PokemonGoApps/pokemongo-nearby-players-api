@@ -4,8 +4,12 @@
   "description": "A program to find nearby Pokemon GO Players and interact with them safely",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "Deepak Kamat",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "handlebars": "^4.0.5"
+  }
 }
