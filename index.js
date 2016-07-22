@@ -10,7 +10,10 @@
 var _          = require('lodash'),
     express    = require('express'),
     request    = require('request'),
-    config     = require('./private/configs/config.js');
+
+    config     = require('./private/configs/config.js'),
+    mapsFunc   = require('./map-functions.js');
+
 
 // Server port
 var _port_ = process.env.PORT || 3000;
@@ -40,8 +43,9 @@ pokemonGoApi.get('/api/', function(req, res){
 });
 
 pokemonGoApi.get('/api/near/:latitude/:longtitude', function(req, res){
+
 	// Set response headers here
-	res.set( {'Content-Type': 'text/json'} );
+	res.set('Content-type', 'application/json');
 
 	// Check if Latitude & Longtitude are correct
 	if (true) {}
@@ -54,11 +58,38 @@ pokemonGoApi.get('/api/near/:latitude/:longtitude', function(req, res){
 
 
     // Reverse Geocode
-    var rvrs_geocode_uri = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+ coords.lat +","+ coords.lng +"&key="+ keys.geocodeApiKey + " ";
+    var rvrs_geocode_uri = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
+    + coords.lat +","
+    + coords.lng 
+    +"&key="
+    + keys.geocodeApiKey 
+    + " ";
 
-    request(rvrs_geocode_uri, ( err, response, body ) => {
-    	console.log('::: Body :::');
-    	res.send( body );
+    request(rvrs_geocode_uri, ( err, response, data ) => {
+    	// Handle exceptions
+    	if ( err ) {
+    		console.err("Error occured: " + err);
+    		res.send("An error occured: " + err);
+    	}
+
+    	// Storing the Google Geocode JSON Data of the Lat-Long in the following variable
+    	var maps_data = JSON.parse( data );
+
+    	// Check if we got results for the passed lat-long
+    	if (maps_data.status == "okay") {
+    		console.log('>> Body >>');
+    		res.send( JSON.parse( JSON.stringify( maps_data, null, 2 ) ) );
+    	}
+
+    	else if ( maps_data.status != "okay" ) {
+    		var error_data = {
+    			"status" : "failed",
+    		    "reason" : maps_data.status,
+    		    "message": "Please check the passed latitude and longtitude. -90 >= Latitude =< 90 && -180 >= Longtitude =< 180"
+    	    };
+    		res.send( error_data );
+    	}
+
     });
 
 
